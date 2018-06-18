@@ -1,92 +1,77 @@
-<!DOCTYPEhtml>
-
+﻿<!DOCTYPEhtml>
 <htmllang="en">
-
     <head>
-
         <meta charset="UTF-8">
-
-        <title>轮播图</title>
-
+        <title>swiper</title>
         <style>
-            /**{margin:0;padding:0}：初学经常遇到这种方法，不推荐，这样意思不管你用不用这个标签，它都帮你初始化，浪费浏览器资源*/
-
-            div,
-            ul,
-            li,
-            img,
-            a,
-            span {
+            * {
                 margin: 0;
                 padding: 0
             }
-
+            body{
+                background-color: #fff;
+            }
             .lunBo {
-                margin: 100px auto;
-                position: relative;
-                border-radius: 15px;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: auto;
+                border-radius: 10px;
+                box-shadow: 5px 5px 20px #555;
                 overflow: hidden
             }
-
             .lunBo,
             .lunBo ul li,
             .lunBo ul li img {
-                width: 400px;
-                height: 250px;
+                width: 700px;
+                height: 450px;
             }
-
             .lunBo ul {
-                height: 250px;
+                height: 450px;
                 position: absolute;
             }
-
             .lunBo ul li {
                 float: left;
                 list-style: none;
             }
-
             /*鼠标按钮*/
-
             .other {
                 position: absolute;
-                top: 110px;
+                bottom: 0;
                 width: 100%;
                 display: none;
             }
-
             .other .direction {
-                height: 30px;
+                position: absolute;
+                width: 100%;
+                bottom: 220px;
             }
-
             .other .direction a {
+                position: relative;
+                z-index: 15;
                 width: 30px;
                 font: 20px bold 宋体;
                 color: black;
                 background: lightblue;
                 line-height: 30px;
-                border-radius: 15px;
+                border-radius: 50%;
                 text-align: center;
                 text-decoration: none;
                 cursor: pointer;
-                z-index: 15;
-                position: relative;
             }
-
             .left {
                 float: left;
             }
-
             .right {
                 float: right
             }
-
             /*小圆点*/
-
             .other .point {
                 width: 100px;
-                margin: 90px auto 0;
+                margin: 0 auto 20px auto;
             }
-
             span {
                 width: 10px;
                 height: 10px;
@@ -98,225 +83,127 @@
                 position: relative;
                 z-index: 15;
             }
-
             .yellow {
-                background: yellow;
+                background: blanchedalmond;
             }
         </style>
 
         <script>
             window.onload = function () {
-
                 function lunBo() {
-
                     var oDiv = document.getElementById('LunBo');
-
                     var oOther = document.getElementById('Other');
-
                     var oUl = oDiv.getElementsByTagName('ul')[0];
-
                     var oLi = oUl.getElementsByTagName('li');
-
                     var oPoint = oDiv.getElementsByTagName('span');
-
                     var time = 0;
-
                     var speed = -oLi[0].offsetWidth; //这是每次移动的距离为li的宽度，也就是图片的宽度
-
                     oUl.style.width = oLi[0].offsetWidth * oLi.length + "px"; //设置Ul的宽度
-
                     /*基础实现部分*/
-
                     function move() {
-
                         oUl.style.left = oUl.offsetLeft + speed + 'px'; //这句就是刚刚的关键点，位移增减，需注意要设置成绝对定位，offsetLeft才有效
-
                         //同时这个绝对定位对网站的排布影响是比较大的，尽量让其的影响范围缩小，最简单的办法就是在其最接近的父元素设置成relative，也就是相对定位
-
-                        if (oUl.offsetLeft <= -oLi[0].offsetWidth * oLi.length)
-
-                        {
-
+                        if (oUl.offsetLeft <= -oLi[0].offsetWidth * oLi.length) {
                             oUl.style.left = '0'; //这个判断呢是当山水画移到最左端时，让它回到原点，并继续循环移动
-
                         }
-
                         if (oUl.offsetLeft >= oLi[0].offsetWidth) { //这个也一样，方向是Ul往右移动到最后一张图时，又重新回到原点
-
                             oUl.style.left = -oLi[0].offsetWidth * (oLi.length - 1) + 'px';
-
                         }
-
                         point();
-
                     }
-
                     /*setInterval(move,1000)：这个是循环定时器，它会每隔1000ms调用move函数*/
-
-                    time = setInterval(move, 3000);
-
-
-
+                    time = setInterval(move, 1000);
                     //鼠标移入移出事件：很简单，我要让当鼠标移入时轮播图暂停，就先清除定时器，移出时重新打开即可
-
                     oDiv.onmouseover = function () {
                         clearInterval(time);
                         oOther.style.display = 'block';
                     };
-
                     oDiv.onmouseout = function () {
-                        time = setInterval(move, 3000);
+                        time = setInterval(move, 1000);
                         oOther.style.display = 'none'
                     };
-
-
-
                     /*小圆点跟随变动：这个是必须的，无论是自动播放，左右切图还是点击小圆点，都会有变动，需要封装成一个子函数*/
-
                     function point() {
-
                         var flag = -oUl.offsetLeft / oLi[0].offsetWidth;
-
                         for (var i = 0; i < oPoint.length; i++) {
-
                             oPoint[i].className = '';
-
                             //全部小圆点清除颜色，因为你事先并不知道有多少个有色，多少个无色，宁可错杀一千，绝不放过一个
-
                         }
-
                         oPoint[flag].className = 'yellow'; //选中的小圆点加黄色背景
-
                     }
-
-
-
                     /*左右单击切换图片*/
-
                     var oDiv1 = document.getElementById('Other');
-
                     var oA = oDiv1.getElementsByTagName('a');
-
                     oA[0].onclick = function () { //这里两个oA其实是左右键，
-
                         speed = oLi[0].offsetWidth; //前面是+speed,向左移为什么速度是正的？想一想？
-
                         setTimeout(move, 0); //很简单，我们点击向左，实际上是想把当前图左边的一张图显示出来
-
                         point(); //因而Ul实际上是向右移动，所以速度为正
-
                     };
-
                     oA[1].onclick = function () {
-
                         speed = -oLi[0].offsetWidth; //反之也一样
-
                         setTimeout(move, 0);
-
                         point();
-
                     };
-
-
 
                     /*单击小圆点切换对应图片*/
-
                     for (var i = 0; i < oPoint.length; i++) {
-
                         oPoint[i].index = i;
-
                         oPoint[i].onclick = function () {
-
                             for (var i = 0; i < oPoint.length; i++) {
-
                                 oPoint[i].className = '';
-
                             }
-
                             this.className = 'yellow';
-
                             oUl.style.left = -oLi[0].offsetWidth * this.index + 'px';
-
                         }
-
                     }
-
                 }
-
                 lunBo();
-
             }
         </script>
-
     </head>
-
     <body>
-
         <div class="lunBo" id="LunBo">
-
             <div class="other" id="Other">
-
                 <div class="direction">
-
                     <a href="javascript:;" class="left">&lt;</a>
-
                     <a href="javascript:;" class="right">&gt;</a>
-
                 </div>
-
                 <div class="point">
-
                     <span class="yellow">
                     </span>
-
                     <span></span>
-
                     <span></span>
-
                     <span></span>
-
                     <span></span>
-
                 </div>
-
             </div>
-
             <ul>
-
                 <li>
                     <a href="javascript:">
                         <img src="img/1.jpg" alt="1">
                     </a>
                 </li>
-
                 <li>
                     <a href="javascript:">
                         <img src="img/2.jpg" alt="2">
                     </a>
                 </li>
-
                 <li>
                     <a href="javascript:">
                         <img src="img/3.jpg" alt="3">
                     </a>
                 </li>
-
                 <li>
                     <a href="javascript:">
                         <img src="img/4.jpg" alt="4">
                     </a>
                 </li>
-
                 <li>
                     <a href="javascript:">
                         <img src="img/5.jpg" alt="5">
                     </a>
                 </li>
-
             </ul>
-
         </div>
-
     </body>
-
     </html>
