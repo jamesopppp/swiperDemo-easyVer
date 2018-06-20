@@ -19,6 +19,7 @@ window.onload = function () {
             .add('point-select');
         sUl.style.width = sLi[0].offsetWidth * sLi.length + 'px';
 
+        // 基础轮播部分
         function run(direction = 0) {
             direction === 1
                 ? sParam = -sLi[0].offsetWidth
@@ -31,12 +32,13 @@ window.onload = function () {
             if (sUl.offsetLeft >= sLi[0].offsetWidth) {
                 sUl.style.left = -sLi[0].offsetWidth * (sLi.length - 1) + 'px';
             }
-
             pointMove();
         }
 
         moveTimer = setInterval(run, 1500);
 
+
+        // 鼠标移入移出
         sView.onmouseover = function () {
             sSelection
                 .classList
@@ -50,11 +52,12 @@ window.onload = function () {
             moveTimer = setInterval(run, 1500);
         }
 
+
+        //左右按钮切换
         var sItem = sSelection.getElementsByTagName('img');
         sItem[0].onclick = function () {
             run(1);
         }
-
         sItem[1].onclick = function () {
             run();
         }
@@ -72,6 +75,8 @@ window.onload = function () {
                 .add('point-select');
         }
 
+
+        // 点击圆点移动   推荐使用事件委托
         pointView
             .addEventListener('click', function (e) {
                 let target = e.target || e.srcElement;
